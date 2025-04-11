@@ -16,7 +16,7 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_11)
         }
     }
-
+    
     listOf(
         iosX64(),
         iosArm64(),
@@ -27,16 +27,15 @@ kotlin {
             isStatic = true
         }
     }
-
+    
     jvm("desktop")
-
+    
     sourceSets {
         val desktopMain by getting
-
+        
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
-            implementation("io.ktor:ktor-client-android:2.3.12")
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -48,17 +47,10 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(projects.shared)
-            implementation("io.ktor:ktor-client-core:2.3.12")
-            implementation("io.ktor:ktor-client-content-negotiation:2.3.12")
-            implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.12")
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
-            implementation("io.ktor:ktor-client-cio:2.3.12")
-        }
-        iosMain.dependencies {
-            implementation("io.ktor:ktor-client-darwin:2.3.12")
         }
     }
 }

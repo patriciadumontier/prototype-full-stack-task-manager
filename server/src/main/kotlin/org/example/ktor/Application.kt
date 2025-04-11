@@ -10,13 +10,46 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.rpc.krpc.ktor.server.Krpc
 import kotlinx.rpc.krpc.serialization.json.json
 import kotlinx.rpc.krpc.ktor.server.rpc
-import kotlin.coroutines.CoroutineContext
+import org.example.ktor.model.Pizza
 import org.example.ktor.model.PizzaShop
-import org.example.ktor.model.PizzaShopImpl
-import javax.print.PrintServiceLookup.registerService
+import org.example.ktor.model.Receipt
+import kotlin.coroutines.CoroutineContext
+
+class PizzaShopImpl(
+    override val coroutineContext: CoroutineContext
+) : PizzaShop {
+    private val openOrders = mutableMapOf<String, MutableList<Pizza>>()
+
+    override suspend fun orderPizza(clientID: String, pizza: Pizza): Receipt {
+        if(openOrders.containsKey(clientID)) {
+            openOrders[clientID]?.add(pizza)
+        } else {
+            openOrders[clientID] = mutableListOf(pizza)
+        }
+        return Receipt(3.45)
+    }
+
+    override suspend fun viewOrders(clientID: String): Flow<Pizza> {
+        val orders = openOrders[clientID]
+        if (orders != null) {
+            return flow {
+                for (order in orders) {
+                    emit(order)
+                    delay(1000)
+                }
+            }
+        }
+        return flow {}
+    }
+}
 
 fun main() {
-    embeddedServer(Netty, port = SERVER_PORT, host = "0.0.0.0", module = Application::module)
+    embeddedServer(
+        Netty,
+        port = SERVER_PORT,
+        host = "0.0.0.0",
+        module = Application::module
+    )
         .start(wait = true)
 }
 

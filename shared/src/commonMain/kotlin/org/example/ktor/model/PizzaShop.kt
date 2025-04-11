@@ -1,21 +1,17 @@
 package org.example.ktor.model
 
+import kotlinx.coroutines.flow.Flow
 import kotlinx.serialization.Serializable
 import kotlinx.rpc.RemoteService
 import kotlinx.rpc.annotations.Rpc
-import kotlin.coroutines.CoroutineContext
 
 @Rpc
 interface PizzaShop : RemoteService {
+    /*
     suspend fun orderPizza(pizza: Pizza): Receipt
-}
-
-class PizzaShopImpl(
-    override val coroutineContext: CoroutineContext
-) : PizzaShop {
-    override suspend fun orderPizza(pizza: Pizza): Receipt {
-        return Receipt(7.89)
-    }
+    */
+    suspend fun orderPizza(clientID: String, pizza: Pizza): Receipt
+    suspend fun viewOrders(clientID: String): Flow<Pizza>
 }
 
 @Serializable
